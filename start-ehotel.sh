@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
 CONTAINER_NAME="${EHOTEL_PG_CONTAINER:-ehotel-postgres}"
 DB_PORT="${EHOTEL_PG_PORT:-5433}"
 DB_NAME="${EHOTEL_DB_NAME:-db_hotel}"
 DB_USER="${EHOTEL_DB_USER:-postgres}"
 DB_PASSWORD="${EHOTEL_DB_PASSWORD:-password}"
+DB_IMAGE="${EHOTEL_PG_IMAGE:-postgres:16}"
 SCHEMA_FILE="${EHOTEL_SCHEMA_FILE:-$ROOT_DIR/schema.sql}"
+OS_NAME="$(uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]')"
+IS_WINDOWS=false
+
+case "$OS_NAME" in
+  mingw*|msys*|cygwin*)
+    IS_WINDOWS=true
+    ;;
+esac
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -19,8 +28,14 @@ require_cmd() {
 
 require_cmd docker
 
-if [ ! -f "$ROOT_DIR/EHotel/mvnw" ]; then
-  echo "Erreur: fichier introuvable: $ROOT_DIR/EHotel/mvnw" >&2
+if ! docker info >/dev/null 2>&1; then
+  echo "Erreur: Docker est installe mais le daemon n'est pas accessible." >&2
+  echo "Demarre Docker Desktop (ou le service docker) puis relance." >&2
+  exit 1
+fi
+
+if [ ! -f "$ROOT_DIR/EHotel/mvnw" ] && [ ! -f "$ROOT_DIR/EHotel/mvnw.cmd" ]; then
+  echo "Erreur: fichier introuvable: $ROOT_DIR/EHotel/mvnw (ou mvnw.cmd)." >&2
   exit 1
 fi
 
@@ -35,7 +50,7 @@ if [ -z "$container_exists" ]; then
     -e "POSTGRES_USER=$DB_USER" \
     -e "POSTGRES_PASSWORD=$DB_PASSWORD" \
     -p "$DB_PORT:5432" \
-    postgres:16 >/dev/null
+    "$DB_IMAGE" >/dev/null
 elif [ -z "$container_running" ]; then
   echo "Demarrage du conteneur PostgreSQL existant ($CONTAINER_NAME)..."
   docker start "$CONTAINER_NAME" >/dev/null
@@ -66,7 +81,19 @@ fi
 
 echo "Demarrage de l'application sur http://localhost:8080 ..."
 cd "$ROOT_DIR/EHotel"
-SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}" \
-SPRING_DATASOURCE_USERNAME="$DB_USER" \
-SPRING_DATASOURCE_PASSWORD="$DB_PASSWORD" \
-sh mvnw spring-boot:run
+
+if [ -f "$ROOT_DIR/EHotel/mvnw" ]; then
+  SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}" \
+  SPRING_DATASOURCE_USERNAME="$DB_USER" \
+  SPRING_DATASOURCE_PASSWORD="$DB_PASSWORD" \
+  sh mvnw spring-boot:run
+elif [ "$IS_WINDOWS" = true ] && [ -f "$ROOT_DIR/EHotel/mvnw.cmd" ]; then
+  SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:${DB_PORT}/${DB_NAME}" \
+  SPRING_DATASOURCE_USERNAME="$DB_USER" \
+  SPRING_DATASOURCE_PASSWORD="$DB_PASSWORD" \
+  cmd.exe //c mvnw.cmd spring-boot:run
+else
+  echo "Erreur: aucun wrapper Maven compatible trouve." >&2
+  echo "Attendu: EHotel/mvnw ou EHotel/mvnw.cmd" >&2
+  exit 1
+fi

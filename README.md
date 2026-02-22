@@ -61,6 +61,20 @@ chmod +x start-ehotel.sh
 ./start-ehotel.sh
 ```
 
+Commandes par systeme:
+
+- macOS / Linux: `./start-ehotel.sh`
+- Windows (CMD / PowerShell): `start-ehotel.bat`
+- Windows (Git Bash / WSL): `./start-ehotel.sh`
+
+Variables optionnelles (port, credentials, image Docker):
+
+- `EHOTEL_PG_PORT`
+- `EHOTEL_DB_NAME`
+- `EHOTEL_DB_USER`
+- `EHOTEL_DB_PASSWORD`
+- `EHOTEL_PG_IMAGE`
+
 ## Structure du projet
 
 ```

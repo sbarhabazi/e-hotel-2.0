@@ -1,0 +1,33 @@
+services:
+  db:
+    image: ${EHOTEL_PG_IMAGE:-postgres:16}
+    environment:
+      POSTGRES_DB: ${EHOTEL_DB_NAME:-db_hotel}
+      POSTGRES_USER: ${EHOTEL_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${EHOTEL_DB_PASSWORD:-password}
+    volumes:
+      - ehotel_pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${EHOTEL_DB_USER:-postgres} -d ${EHOTEL_DB_NAME:-db_hotel}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build:
+      context: ./EHotel
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${EHOTEL_DB_NAME:-db_hotel}
+      SPRING_DATASOURCE_USERNAME: ${EHOTEL_DB_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${EHOTEL_DB_PASSWORD:-password}
+    ports:
+      - "${EHOTEL_APP_PORT:-8080}:8080"
+    restart: unless-stopped
+
+volumes:
+  ehotel_pgdata:

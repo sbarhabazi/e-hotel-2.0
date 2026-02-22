@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+COMPOSE_FILE="$ROOT_DIR/docker-compose.yml"
+APP_PORT="${EHOTEL_APP_PORT:-8080}"
+ACTION="${1:-up}"
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "Error: '$1' command not found." >&2
+    exit 1
+  fi
+}
+
+require_cmd docker
+
+if ! docker info >/dev/null 2>&1; then
+  echo "Error: Docker daemon is not reachable. Start Docker and retry." >&2
+  exit 1
+fi
+
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker compose)
+elif command -v docker-compose >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker-compose)
+else
+  echo "Error: docker compose plugin (or docker-compose) is required." >&2
+  exit 1
+fi
+
+if [ ! -f "$COMPOSE_FILE" ]; then
+  echo "Error: missing file $COMPOSE_FILE" >&2
+  exit 1
+fi
+
+case "$ACTION" in
+  up)
+    echo "Starting E-Hotel with Docker Compose..."
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" up -d --build
+
+    if command -v curl >/dev/null 2>&1; then
+      echo "Waiting for application on http://localhost:${APP_PORT} ..."
+      i=0
+      while [ "$i" -lt 90 ]; do
+        if curl -fsS "http://localhost:${APP_PORT}" >/dev/null 2>&1; then
+          echo "E-Hotel is running at http://localhost:${APP_PORT}"
+          exit 0
+        fi
+        sleep 2
+        i=$((i + 1))
+      done
+      echo "App container started, but readiness check timed out." >&2
+      echo "Run: ${COMPOSE_CMD[*]} -f \"$COMPOSE_FILE\" logs --tail=100 app" >&2
+      exit 1
+    else
+      echo "E-Hotel started. Open: http://localhost:${APP_PORT}"
+    fi
+    ;;
+  down)
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" down
+    ;;
+  logs)
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" logs -f app
+    ;;
+  *)
+    echo "Usage: ./start-ehotel [up|down|logs]" >&2
+    exit 1
+    ;;
+esac

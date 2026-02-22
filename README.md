@@ -17,6 +17,10 @@ Application web de gestion hôtelière multi-établissements développée avec S
 
 ## Prérequis
 
+- Docker Desktop (ou Docker Engine + Docker Compose)
+
+Prérequis supplémentaires seulement si vous lancez sans Docker:
+
 - Java 17+
 - Maven 3.6+
 - PostgreSQL installé et démarré en local
@@ -54,22 +58,27 @@ L'application est accessible à l'adresse : **http://localhost:8080**
 
 ### Lancement rapide (1 commande)
 
-Depuis la racine du projet, une seule commande demarre PostgreSQL (Docker), importe `schema.sql` si necessaire, puis lance l'application:
+Depuis la racine du projet, une seule commande demarre PostgreSQL et l'application via Docker Compose:
 
 ```bash
-chmod +x start-ehotel.sh
-./start-ehotel.sh
+chmod +x start-ehotel
+./start-ehotel
 ```
 
 Commandes par systeme:
 
-- macOS / Linux: `./start-ehotel.sh`
+- macOS / Linux / WSL / Git Bash: `./start-ehotel`
 - Windows (CMD / PowerShell): `start-ehotel.bat`
-- Windows (Git Bash / WSL): `./start-ehotel.sh`
 
-Variables optionnelles (port, credentials, image Docker):
+Commandes utiles:
 
-- `EHOTEL_PG_PORT`
+- `./start-ehotel` : demarrer (ou reconstruire) les services
+- `./start-ehotel logs` : suivre les logs de l'application
+- `./start-ehotel down` : arreter les services
+
+Variables optionnelles:
+
+- `EHOTEL_APP_PORT`
 - `EHOTEL_DB_NAME`
 - `EHOTEL_DB_USER`
 - `EHOTEL_DB_PASSWORD`

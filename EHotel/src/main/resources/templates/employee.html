@@ -1,25 +1,46 @@
 <!DOCTYPE html>
+<!-- Page d'accueil du portail employé -->
+<!-- Accessible via GET /employee -->
+<!-- Propose les fonctionnalités disponibles pour un employé de l'hôtel -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Employee Home Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Portail Employé - E-Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
 <body>
     <div class="container mt-5">
         <div class="text-center">
-            <h1>Bienvenue dans le système de réservation d'hôtel</h1>
-            <p class="lead">Utilisez la barre de navigation pour accéder aux options disponibles</p>
+            <h1>Portail Employé</h1>
+            <p class="lead">Sélectionnez une option</p>
         </div>
+
+        <!-- Options de gestion disponibles pour les employés -->
         <div>
-            <h2 class="mt-5">Options disponibles</h2>
-            <ul class="list-group">
-                <li class="list-group-item"><a href="/room/search" class="text-decoration-none">Rechercher une chambre</a></li>
-                <li class="list-group-item"><a href="/employee/customers" class="text-decoration-none">Liste de clients</a></li>
-                <li class="list-group-item"><a href="/manager" class="text-decoration-none">Manager</a></li>
-                <li class="list-group-item"><a href="/booking/bookings" class="text-decoration-none">Liste des réservations</a></li>
-                <li class="list-group-item"><a href="/booking/rentals" class="text-decoration-none">Liste des locations</a></li>
-                <li class="list-group-item"><a href="/payment/payments" class="text-decoration-none">Liste des paiements</a></li>
+            <ul class="list-group mt-4">
+                <!-- Gestion des clients -->
+                <li class="list-group-item">
+                    <a href="/employee/customers" class="text-decoration-none">Gérer les clients</a>
+                </li>
+                <!-- Gestion des réservations (transformation en locations) -->
+                <li class="list-group-item">
+                    <a href="/booking/bookings" class="text-decoration-none">Gérer les réservations</a>
+                </li>
+                <!-- Gestion des locations actives et paiements -->
+                <li class="list-group-item">
+                    <a href="/booking/rentals" class="text-decoration-none">Gérer les locations</a>
+                </li>
+                <!-- Historique des paiements -->
+                <li class="list-group-item">
+                    <a href="/payment/payments" class="text-decoration-none">Voir les paiements</a>
+                </li>
+                <!-- Portail du gestionnaire (gestion des employés et hôtels) -->
+                <li class="list-group-item">
+                    <a href="/manager" class="text-decoration-none">Portail gestionnaire</a>
+                </li>
             </ul>
         </div>
     </div>

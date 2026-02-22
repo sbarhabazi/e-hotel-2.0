@@ -1,66 +1,96 @@
 <!DOCTYPE html>
+<!-- Template Thymeleaf pour le formulaire d'ajout d'un nouvel hôtel -->
+<!-- Accessible via GET /hotel/hotel/add (affichage) et POST /hotel/hotel/add (soumission) -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Hotel Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Ajouter un hôtel - E-Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">Ajouter un hotel</h2>
+        <h2 class="text-center">Ajouter un hôtel</h2>
+
+        <!-- Formulaire lié au DTO CreateHotelDTO via th:object="${hotel}" -->
+        <!-- th:action : URL de soumission du formulaire -->
+        <!-- th:field="*{champ}" : lie chaque champ au DTO (lecture/écriture) -->
         <form action="#" th:action="@{/hotel/hotel/add}" th:object="${hotel}" method="post">
+
+            <!-- Champ : Nom de l'hôtel -->
             <label class="form-label" for="name">Nom</label>
             <input type="text" class="form-control" id="name" th:field="*{name}">
+            <!-- Affiche le message d'erreur de validation si le champ "name" est invalide -->
             <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Erreur</div>
 
-            <label class="form-label" for="roomsNumber">Nombre de chambre</label>
+            <!-- Champ : Nombre de chambres de l'hôtel -->
+            <label class="form-label" for="roomsNumber">Nombre de chambres</label>
             <input type="number" class="form-control" id="roomsNumber" th:field="*{roomsNumber}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('roomsNumber')}" th:errors="*{roomsNumber}">Erreur</div>
 
-            <label class="form-label" for="startNumber">Nombre d'etoile</label>
+            <!-- Champ : Classement en étoiles (1 à 5) -->
+            <label class="form-label" for="startNumber">Nombre d'étoiles</label>
             <input type="number" class="form-control" id="startNumber" th:field="*{startNumber}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('startNumber')}" th:errors="*{startNumber}">Erreur</div>
 
+            <!-- Champ : Email de contact de l'hôtel -->
             <label class="form-label" for="email">Courriel</label>
             <input type="text" class="form-control" id="email" th:field="*{email}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erreur</div>
 
-            <label class="form-label" for="streetNumber">Numero de rue</label>
+            <!-- Champ : Numéro de rue de l'hôtel -->
+            <label class="form-label" for="streetNumber">Numéro de rue</label>
             <input type="number" class="form-control" id="streetNumber" th:field="*{streetNumber}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('streetNumber')}" th:errors="*{streetNumber}">Erreur</div>
 
+            <!-- Champ : Nom de la rue -->
             <label class="form-label" for="streetName">Nom de rue</label>
             <input type="text" class="form-control" id="streetName" th:field="*{streetName}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('streetName')}" th:errors="*{streetName}">Erreur</div>
 
+            <!-- Champ : Ville -->
             <label class="form-label" for="city">Ville</label>
             <input type="text" class="form-control" id="city" th:field="*{city}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Erreur</div>
 
+            <!-- Champ : Code postal (format canadien A1A 1A1) -->
             <label class="form-label" for="postalCode">Code postal</label>
             <input type="text" class="form-control" id="postalCode" th:field="*{postalCode}">
             <div class="alert alert-danger" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}">Erreur</div>
 
+            <!-- Sélecteur : Pays -->
             <label class="form-label" for="country">Pays</label>
-            <select type="text" class="form-control" id="country" th:field="*{country}">
+            <select class="form-control" id="country" th:field="*{country}">
                 <option value="CA">Canada</option>
-                <option value="US">Etat-Unis</option>
+                <option value="US">États-Unis</option>
                 <option value="MX">Mexique</option>
             </select>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('country')}" th:errors="*{country}">Erreur</div>
 
-            <label class="form-label" for="hotelchain">Chaine Hoteliere</label>
-            <select type="text" class="form-control" id="hotelchain" th:field="*{idHotelChain}">
-                <option th:each="hotelChain : ${hotelChains}" th:value="${hotelChain.id}" th:text="${hotelChain.name}"></option>
+            <!-- Sélecteur : Chaîne hôtelière (liste dynamique chargée depuis la BDD) -->
+            <!-- th:each génère une option par chaîne hôtelière disponible -->
+            <label class="form-label" for="hotelchain">Chaîne hôtelière</label>
+            <select class="form-control" id="hotelchain" th:field="*{idHotelChain}">
+                <option th:each="hotelChain : ${hotelChains}"
+                        th:value="${hotelChain.id}"
+                        th:text="${hotelChain.name}"></option>
             </select>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('idHotelChain')}" th:errors="*{idHotelChain}">Erreur</div>
 
+            <!-- Sélecteur : Gérant de l'hôtel (liste dynamique des employés de la BDD) -->
             <label class="form-label" for="manager">Gérant</label>
-            <select type="text" class="form-control" id="manager" th:field="*{sinManager}">
-                <option th:each="employee : ${employees}" th:value="${employee.sinEmployee}" th:text="${employee.firstname} + ' ' + ${employee.lastname}"></option>
+            <select class="form-control" id="manager" th:field="*{sinManager}">
+                <option th:each="employee : ${employees}"
+                        th:value="${employee.sinEmployee}"
+                        th:text="${employee.firstname} + ' ' + ${employee.lastname}"></option>
             </select>
             <div class="alert alert-danger" th:if="${#fields.hasErrors('sinManager')}" th:errors="*{sinManager}">Erreur</div>
 
+            <!-- Bouton de soumission du formulaire -->
             <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
         </form>
+    </div>
+</body>
 </html>

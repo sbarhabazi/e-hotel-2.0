@@ -1,48 +1,79 @@
 <!DOCTYPE html>
+<!-- Template Thymeleaf pour le formulaire de modification d'un hôtel existant -->
+<!-- Accessible via GET /hotel/hotel/update/{idHotel} (affichage pré-rempli) -->
+<!-- et POST /hotel/hotel/update/{idHotel} (soumission des modifications) -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Update Hotel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Modifier un hôtel - E-Hotel</title>
+    <!-- Feuille de style Bootstrap 5.3.3 chargée depuis le CDN jsDelivr -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
 <body>
     <div class="container mt-5">
         <div class="text-center">
             <h2>Modifier un hotel</h2>
         </div>
+
+        <!-- Formulaire lié au DTO CreateHotelDTO via th:object="${hotel}" -->
+        <!-- th:action : URL dynamique incluant l'ID de l'hôtel à modifier -->
+        <!-- L'ID est injecté dans l'URL via (idHotel=${hotel.idHotel}) -->
         <form action="#" th:action="@{/hotel/hotel/update/{idHotel}(idHotel=${hotel.idHotel})}" th:object="${hotel}" method="post">
+
+            <!-- Champ : Nom de l'hôtel (pré-rempli avec la valeur actuelle) -->
             <div class="mb-3">
                 <label for="hotelName" class="form-label">Nom de l'hotel</label>
+                <!-- th:field pré-remplit la valeur ET génère name/id/value automatiquement -->
                 <input type="text" class="form-control" id="hotelName" th:field="*{name}">
             </div>
+
+            <!-- Champ : Ville de l'hôtel -->
             <div class="mb-3">
                 <label for="hotelCity" class="form-label">Ville de l'hotel</label>
                 <input type="text" class="form-control" id="hotelCity" th:field="*{city}">
             </div>
+
+            <!-- Champ : Nombre total de chambres dans l'hôtel -->
             <div class="mb-3">
                 <label for="hotelRoomsNumber" class="form-label">Nombre de chambres</label>
                 <input type="number" class="form-control" id="hotelRoomsNumber" th:field="*{roomsNumber}">
             </div>
+
+            <!-- Champ : Classement en étoiles (1 à 5) -->
             <div class="mb-3">
                 <label for="hotelStarsNumber" class="form-label">Nombre d'étoiles</label>
                 <input type="number" class="form-control" id="hotelStarsNumber" th:field="*{startNumber}">
             </div>
+
+            <!-- Champ : Adresse email de contact de l'hôtel -->
             <div class="mb-3">
                 <label for="hotelEmail" class="form-label">Courriel</label>
                 <input type="text" class="form-control" id="hotelEmail" th:field="*{email}">
             </div>
+
+            <!-- Champ : Numéro de rue (partie numérique de l'adresse) -->
             <div class="mb-3">
                 <label for="hotelStreetNumber" class="form-label">Numéro de rue</label>
                 <input type="number" class="form-control" id="hotelStreetNumber" th:field="*{streetNumber}">
             </div>
+
+            <!-- Champ : Nom de la rue -->
             <div class="mb-3">
                 <label for="hotelStreetName" class="form-label">Nom de rue</label>
                 <input type="text" class="form-control" id="hotelStreetName" th:field="*{streetName}">
             </div>
+
+            <!-- Champ : Code postal (format canadien A1A 1A1) -->
             <div class="mb-3">
                 <label for="hotelPostalCode" class="form-label">Code postal</label>
                 <input type="text" class="form-control" id="hotelPostalCode" th:field="*{postalCode}">
             </div>
+
+            <!-- Sélecteur : Pays de l'hôtel (Canada, États-Unis, Mexique) -->
+            <!-- th:field sélectionne automatiquement l'option correspondant à la valeur actuelle -->
             <div class="mb-3">
                 <label for="hotelCountry" class="form-label">Pays</label>
                 <select class="form-select" id="hotelCountry" th:field="*{country}">
@@ -51,20 +82,32 @@
                     <option value="MX">Mexique</option>
                 </select>
             </div>
+
+            <!-- Sélecteur : Chaîne hôtelière (liste dynamique depuis la BDD) -->
+            <!-- th:each génère une option par chaîne ; th:field sélectionne la chaîne actuelle -->
             <div class="mb-3">
                 <label for="hotelChain" class="form-label">Chaine Hoteliere</label>
                 <select class="form-select" id="hotelChain" th:field="*{idHotelChain}">
-                    <option th:each="hotelChain : ${hotelChains}" th:value="${hotelChain.id}" th:text="${hotelChain.name}"></option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="hotelManager" class="form-label">Gérant</label>
-                <select class="form-select" id="hotelManager" th:field="*{sinManager}">
-                    <option th:each="employee : ${employees}" th:value="${employee.sinEmployee}" th:text="${employee.firstname} + ' ' + ${employee.lastname}"></option>
+                    <option th:each="hotelChain : ${hotelChains}"
+                            th:value="${hotelChain.id}"
+                            th:text="${hotelChain.name}"></option>
                 </select>
             </div>
 
+            <!-- Sélecteur : Gérant de l'hôtel (liste dynamique des employés depuis la BDD) -->
+            <!-- Affiche prénom + nom ; la valeur envoyée est le NAS (sinEmployee) du gérant -->
+            <div class="mb-3">
+                <label for="hotelManager" class="form-label">Gérant</label>
+                <select class="form-select" id="hotelManager" th:field="*{sinManager}">
+                    <option th:each="employee : ${employees}"
+                            th:value="${employee.sinEmployee}"
+                            th:text="${employee.firstname} + ' ' + ${employee.lastname}"></option>
+                </select>
+            </div>
+
+            <!-- Bouton de soumission : envoie les données modifiées vers le contrôleur -->
             <button type="submit" class="btn btn-primary">Modifier</button>
         </form>
     </div>
+</body>
 </html>

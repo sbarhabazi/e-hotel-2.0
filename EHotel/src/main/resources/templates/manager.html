@@ -1,22 +1,39 @@
 <!DOCTYPE html>
+<!-- Page d'accueil du portail gestionnaire (manager) -->
+<!-- Accessible via GET /manager -->
+<!-- Propose les fonctionnalités de gestion avancée pour les gérants d'hôtel -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manager Home Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Portail Gestionnaire - E-Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
 <body>
     <div class="container mt-5">
         <div class="text-center">
-            <h1>Bienvenue dans le système de réservation d'hôtel</h1>
-            <p class="lead">Utilisez la barre de navigation pour accéder aux options disponibles</p>
+            <h1>Portail Gestionnaire</h1>
+            <p class="lead">Utilisez les options ci-dessous pour gérer l'établissement</p>
         </div>
+
+        <!-- Options de gestion disponibles pour le gérant -->
         <div>
             <h2 class="mt-5">Options disponibles</h2>
             <ul class="list-group">
-                <li class="list-group-item"><a href="/manager/employees" class="text-decoration-none">Liste d'employés</a></li>
-                <li class="list-group-item"><a href="/room/list/1" class="text-decoration-none">Liste de chambres</a></li>
-                <li class="list-group-item"><a href="hotel/hotels" class="text-decoration-none">Liste des hotels</a> </li>
+                <!-- Gestion du personnel de l'hôtel -->
+                <li class="list-group-item">
+                    <a href="/manager/employees" class="text-decoration-none">Liste des employés</a>
+                </li>
+                <!-- Gestion des chambres (affiche l'hôtel #1 par défaut) -->
+                <li class="list-group-item">
+                    <a href="/room/list/1" class="text-decoration-none">Liste des chambres</a>
+                </li>
+                <!-- Gestion des hôtels de la chaîne -->
+                <li class="list-group-item">
+                    <a href="/hotel/hotels" class="text-decoration-none">Liste des hôtels</a>
+                </li>
             </ul>
         </div>
     </div>

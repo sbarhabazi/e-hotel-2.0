@@ -1,51 +1,69 @@
 <!DOCTYPE html>
+<!-- Template Thymeleaf pour la liste et la gestion des clients -->
+<!-- Accessible via GET /employee/customers -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Customers</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Clients - E-Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
-
 <body>
     <div class="container mt-5">
+        <!-- En-tête de la page -->
         <div class="text-center">
             <h1>Liste des clients</h1>
         </div>
+
+        <!-- Bouton d'ajout d'un nouveau client -->
         <div>
             <a href="/employee/customer/add" class="btn btn-primary">Ajouter un client</a>
-        <div>
-            <table class="table table-striped mt-5">
-                <thead>
-                    <tr>
-                        <th scope="col">NAS</th>
-                        <th scope="col">Prénom</th>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Numéro de rue</th>
-                        <th scope="col">Nom de rue</th>
-                        <th scope="col">Ville</th>
-                        <th scope="col">Code postal</th>
-                        <th scope="col">Pays</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="customer : ${customers}">
-                        <td th:text="${customer.sinCustomer}"></td>
-                        <td th:text="${customer.firstname}"></td>
-                        <td th:text="${customer.lastname}"></td>
-                        <td th:text="${customer.streetNumber}"></td>
-                        <td th:text="${customer.streetName}"></td>
-                        <td th:text="${customer.city}"></td>
-                        <td th:text="${customer.postalCode}"></td>
-                        <td th:text="${customer.country}"></td>
-                        <td>
-                            <a th:href="@{/employee/customer/update/{sinCustomer}(sinCustomer=${customer.sinCustomer})}" class="btn btn-primary">Modifier</a>
-                            <a th:href="@{/employee/customer/delete/{sinCustomer}(sinCustomer=${customer.sinCustomer})}" class="btn btn-danger ms-3">Supprimer</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
+
+        <!-- Tableau des clients enregistrés -->
+        <!-- th:each="customer : ${customers}" : itère sur la liste passée par EmployeeController -->
+        <table class="table table-striped mt-5">
+            <thead>
+                <tr>
+                    <th scope="col">NAS</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Numéro de rue</th>
+                    <th scope="col">Nom de rue</th>
+                    <th scope="col">Ville</th>
+                    <th scope="col">Code postal</th>
+                    <th scope="col">Pays</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Génère une ligne par client -->
+                <tr th:each="customer : ${customers}">
+                    <!-- NAS du client (identifiant unique) -->
+                    <td th:text="${customer.sinCustomer}"></td>
+                    <td th:text="${customer.firstname}"></td>
+                    <td th:text="${customer.lastname}"></td>
+                    <td th:text="${customer.streetNumber}"></td>
+                    <td th:text="${customer.streetName}"></td>
+                    <td th:text="${customer.city}"></td>
+                    <td th:text="${customer.postalCode}"></td>
+                    <td th:text="${customer.country}"></td>
+                    <td>
+                        <!-- Lien de modification : URL /employee/customer/update/{sinCustomer} -->
+                        <a th:href="@{/employee/customer/update/{sinCustomer}(sinCustomer=${customer.sinCustomer})}"
+                           class="btn btn-primary">Modifier</a>
+                        <!-- Formulaire de suppression du client -->
+                        <form th:action="@{/employee/customer/delete/{sinCustomer}(sinCustomer=${customer.sinCustomer})}"
+                              method="post"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-danger ms-3">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
